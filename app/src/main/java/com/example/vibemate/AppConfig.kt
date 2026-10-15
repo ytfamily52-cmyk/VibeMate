@@ -85,6 +85,12 @@ object AppConfig {
     // matching your data policy". That must never break the chat, so the call is
     // retried ONCE without the block (see postOpenRouterWithPrivacy) — a working
     // reply beats a silent failure. Set to false to never send the block at all.
+    //
+    // NOTE: this block is an OpenRouter FEATURE. The ACTIVE provider is Venice,
+    // which does not accept OpenRouter's "provider" field, so on Venice the block
+    // is never sent (see VibeMateApi.applyProviderPrivacy) — zero-retention there
+    // comes from the Venice key / model tier (venice-uncensored-* is the private
+    // tier), not from this flag.
     const val PRIVATE_STRICT_PRIVACY: Boolean = true
 
     // Default model, used when a persona has no override below.
@@ -180,12 +186,18 @@ object AppConfig {
     const val OPENROUTER_VISION_FALLBACK_MODELS: String =
         "venice-uncensored-1-2,venice-uncensored-role-play"
 
-    // Private (18+) replies are SHORT chat bubbles, so this budget is
-    // deliberately small (was 2048): a huge cap let the model ramble a long
-    // paragraph. A "chat" turn now asks for 2-3 tiny WhatsApp-style messages
-    // (see PRIVATE_BUBBLE_SEPARATOR), so 256 tokens is still plenty — and it
-    // also lowers cost + latency.
-    const val OPENROUTER_MAX_OUTPUT_TOKENS: Int = 256
+    // Private (18+) replies are SHORT chat bubbles, so this budget stays small
+    // (was 2048): a huge cap let the model ramble a long paragraph. A "chat"
+    // turn asks for 2-3 tiny WhatsApp-style messages (see
+    // PRIVATE_BUBBLE_SEPARATOR), so the cap is only a SAFETY ceiling, never a
+    // length target.
+    //
+    // Raised 256 -> 512: at 256 the model hit finish_reason="length" often
+    // enough to fire the truncation retry below, which re-sends the WHOLE
+    // request (system prompt + history) as a SECOND paid call. Output is far
+    // cheaper than a re-billed input, so the larger cap is the cheaper choice
+    // overall — and it makes a cut-off reply rarer.
+    const val OPENROUTER_MAX_OUTPUT_TOKENS: Int = 512
 
     // ...but an INFO turn (the user asked a real question — "Taj Mahal kahan
     // hai", "photosynthesis explain karo") must be answered COMPLETELY. The

@@ -1036,7 +1036,9 @@ class VibeMateApi {
         // empty wallet) so the rotation rules are unit-testable offline.
         // OpenRouter: how many times a transient failure is retried per model,
         // and the base backoff between attempts (multiplied by the attempt no).
-        private const val OPENROUTER_TRIES: Int = 3
+        // 2 is enough for a genuine 429/5xx: the caller ALSO walks the fallback
+        // model chain, so a higher count here only multiplied PAID calls.
+        private const val OPENROUTER_TRIES: Int = 2
         private const val OPENROUTER_RETRY_DELAY_MS: Long = 1_500L
         // Common Roman-Hindi cue words used to detect Hinglish so the 18+ engine
         // can be told (and can mirror) the user's actual language.
@@ -1973,10 +1975,14 @@ class VibeMateApi {
         chat.add(systemTurn)
         // History rows are merged back into TURNS: a Private chat reply is stored
         // as 2-3 separate rows (one per bubble), and the model should see them as
-        // ONE assistant turn — that way the 8-message memory window still covers
-        // the same number of exchanges as it did when a reply was a single row.
-        val turns = ArrayList<Pair<String, String>>()   // role -> content
-        for (m in history.takeLast(AppConfig.CHAT_HISTORY_WINDOW)) {
+        // ONE assistant turn.
+        //
+        // The window is applied AFTER merging. Previously takeLast(8) ran FIRST,
+        // so 8 raw BUBBLE rows (= only ~3 exchanges) survived the window and the
+        // model forgot context far sooner than the 8-exchange memory it is meant
+        // to have — which made the user repeat themselves (more turns, more cost).
+        val allTurns = ArrayList<Pair<String, String>>()   // role -> content
+        for (m in history) {
             // Skip UI-only system notes and anything empty.
             if (m.role != "user" && m.role != "model") continue
             val text = m.content.trim()
@@ -1985,13 +1991,14 @@ class VibeMateApi {
             // model) must NOT stay in context — the model imitates it and keeps
             // deflecting instead of engaging. Drop it so the reply runs clean.
             if (m.role == "model" && privateLooksLikeRefusalTurn(text)) continue
-            val last = turns.lastOrNull()
+            val last = allTurns.lastOrNull()
             if (m.role == "model" && last != null && last.first == "model") {
-                turns[turns.size - 1] = last.first to (last.second + " " + text)
+                allTurns[allTurns.size - 1] = last.first to (last.second + " " + text)
             } else {
-                turns.add(m.role to text)
+                allTurns.add(m.role to text)
             }
         }
+        val turns = allTurns.takeLast(AppConfig.CHAT_HISTORY_WINDOW)
         for ((role, text) in turns) {
             val turn = JsonObject()
             // OpenRouter is OpenAI-compatible: assistant turns MUST use the role
@@ -2105,10 +2112,10 @@ class VibeMateApi {
      * NOT block adult content on these uncensored models.) No-op for any other
      * provider.
      */
-    private fun applyVeniceParams(payload: JsonObject) {
+    private fun applyVeniceParams(payload: JsonObject, includeSystemPrompt: Boolean = true) {
         if (!isVenice()) return
         val params = JsonObject()
-        params.addProperty("include_venice_system_prompt", true)
+        params.addProperty("include_venice_system_prompt", includeSystemPrompt)
         payload.add("venice_parameters", params)
     }
 
@@ -2928,6 +2935,11 @@ class VibeMateApi {
             payload.addProperty("max_tokens", budget)
             try {
                 val body = postOpenRouterWithPrivacy("/chat/completions", payload, key)
+                // COST TRACE: logcat -s VibeMateCost shows the real input/output/
+                // cached token split per call, so a credit burn is MEASURED, not
+                // guessed (in= high -> system prompt cost, several lines per turn
+                // -> a retry/fallback loop, finish=length -> truncation retry).
+                logPrivateUsage(model, body)
                 val text = privateReplyText(body).trim()
                 if (text.isEmpty()) {
                     throw ApiException("OpenRouter model '$model' returned an empty reply.")
@@ -2940,11 +2952,14 @@ class VibeMateApi {
                     continue
                 }
                 if (privateLooksLikeRefusal(text)) {
-                    // A canned refusal is a soft failure: another model is very
-                    // often not filtered, so let the caller try the fallback.
-                    throw ApiException(
+                    // A canned refusal is DETERMINISTIC: the same prompt + model +
+                    // temperature gives the same refusal, so retrying THIS model
+                    // only burns paid calls for an identical result. Record it and
+                    // break straight to the caller's fallback-model chain.
+                    last = ApiException(
                         "OpenRouter model '$model' refused the request: " + text.take(120)
                     )
+                    break
                 }
                 return text
             } catch (e: ApiException) {
@@ -2981,6 +2996,25 @@ class VibeMateApi {
         val first = choices.get(0)?.asJsonObject ?: return ""
         val reason = first.get("finish_reason") ?: return ""
         return if (reason.isJsonNull) "" else reason.asString
+    }
+
+    /**
+     * Logs one private-engine call's token usage so a credit burn is MEASURABLE
+     * instead of guessed — read it with `adb logcat -s VibeMateCost`. Purely
+     * diagnostic; it never changes the request. Read it as: in= high -> system
+     * prompt / Venice prompt cost, several lines per turn -> a retry/fallback
+     * loop, finish=length -> the truncation retry fired, cached= 0 -> prompt
+     * caching is not working.
+     */
+    private fun logPrivateUsage(model: String, body: JsonObject) {
+        val usage = body.getAsJsonObject("usage") ?: return
+        val cached = usage.getAsJsonObject("prompt_tokens_details")?.get("cached_tokens")
+        android.util.Log.d(
+            "VibeMateCost",
+            "model=$model in=${usage.get("prompt_tokens")} " +
+                "out=${usage.get("completion_tokens")} cached=$cached " +
+                "finish=${privateReplyFinishReason(body)}",
+        )
     }
 
     /**
@@ -3084,7 +3118,10 @@ class VibeMateApi {
             // DEEP-SCAN budget: the whole-image scan prompt returns a 6-line itemised
             // read, not a 2-line summary, so 600 used to cut it mid-list.
             payload.addProperty("max_tokens", 900)
-            applyVeniceParams(payload)
+            // Venice's OWN system prompt is turned OFF for the photo reader: it
+            // adds ~500-1500 input tokens to EVERY read and would fight the
+            // dedicated vision prompt above, with no persona behaviour to gain.
+            applyVeniceParams(payload, includeSystemPrompt = false)
             for (attempt in 0 until OPENROUTER_TRIES) {
                 try {
                     // NO provider-privacy block here — VERIFIED LIVE
@@ -3129,9 +3166,11 @@ class VibeMateApi {
             return true
         }
         val msg = (e.message ?: "").lowercase()
+        // "refused" is deliberately NOT here: a refusal is DETERMINISTIC, so the
+        // caller skips straight to the next model instead of re-calling this one.
         return msg.contains("rate limit") || msg.contains("timeout") ||
             msg.contains("timed out") || msg.contains("temporarily") ||
-            msg.contains("unavailable") || msg.contains("refused")
+            msg.contains("unavailable")
     }
 
     /**
