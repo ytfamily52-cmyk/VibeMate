@@ -25,7 +25,7 @@ provider is active** (today: Venice).
 | Setting | Value | Where |
 |---|---|---|
 | Base URL | `https://api.venice.ai/api/v1` | `AppConfig.OPENROUTER_BASE_URL` |
-| Chat model | `aion-labs-aion-3-5-mini` | `OPENROUTER_MODEL` / `OPENROUTER_MODEL_*` |
+| Chat model | `aion-labs-aion-3-5-mini` for the romance rooms (girlfriend / boyfriend / crush); `venice-uncensored-1-2` for friend + gay (4.4x cheaper, weaker Hinglish grammar) | `OPENROUTER_MODEL_*` |
 | Fallbacks | `aion-labs-aion-3-0-mini`, `venice-uncensored-1-2` | `OPENROUTER_FALLBACK_MODEL` |
 | Vision reader | `qwen3-vl-235b-a22b` → `venice-uncensored-1-2` → `venice-uncensored-role-play` | `OPENROUTER_VISION_*` |
 | Temperature | **0.7** | `OPENROUTER_TEMPERATURE` |

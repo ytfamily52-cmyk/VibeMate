@@ -141,11 +141,21 @@ object AppConfig {
     // user = a man too) and girl gay (mate = a WOMAN, user = a woman too, i.e. a
     // lesbian couple). The persona prompt (couple behaviour + body lock) keeps
     // the two apart.
-    const val OPENROUTER_MODEL_GAY: String = "aion-labs-aion-3-5-mini"
+    //
+    // COST: this rides the CHEAP zero-retention model (venice-uncensored-1-2,
+    // $0.20/$0.90 per 1M = 4.4x cheaper than aion-3-5-mini) instead of the
+    // romance model. Its Hinglish grammar is weaker (see the history note
+    // above) — an accepted trade-off here to stop the credits burning. Point it
+    // back at "aion-labs-aion-3-5-mini" if the quality drop is too much.
+    const val OPENROUTER_MODEL_GAY: String = "venice-uncensored-1-2"
     // Friend mode (18+ Private room): the friend is a male buddy who answers
-    // EVERYTHING, so it rides the same model as the romance rooms.
+    // EVERYTHING, so it rides a never-refuses model too.
     // Its NORMAL room still runs on Gemini (see the NOTE above).
-    const val OPENROUTER_MODEL_FRIEND: String = "aion-labs-aion-3-5-mini"
+    //
+    // COST: like Gay mode, this uses the CHEAP zero-retention model
+    // (venice-uncensored-1-2, 4.4x cheaper than aion-3-5-mini) — the same
+    // accepted quality-for-cost trade-off.
+    const val OPENROUTER_MODEL_FRIEND: String = "venice-uncensored-1-2"
 
     // Tried in order when the primary model errors / rate-limits / refuses.
     // aion-3-0-mini is the same family (same voice), and venice-uncensored-1-2 is
