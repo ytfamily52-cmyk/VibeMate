@@ -3030,11 +3030,18 @@ class VibeMateApi {
         } else {
             "https://openrouter.ai/settings/credits"
         }
+        // ALWAYS surface the provider's own words — the model's real limit /
+        // refusal is what the user wants to see, not an app paraphrase.
+        val raw = (e.message ?: "").trim()
         return when (e.statusCode) {
             401 -> "$provider rejected the API key (401). Check $keyName."
             402 -> "$provider has no credits left (402). Top up at $topUp."
-            429 -> "model '$model' is rate-limited (429). " + (e.message ?: "")
-            else -> e.message ?: "$provider request failed (HTTP ${e.statusCode})."
+            429 ->
+                "model '$model' is rate-limited (429)." +
+                    if (raw.isEmpty()) "" else " $provider said: \"$raw\""
+            else ->
+                if (raw.isNotEmpty()) "$provider said: \"$raw\""
+                else "$provider request failed (HTTP ${e.statusCode})."
         }
     }
 

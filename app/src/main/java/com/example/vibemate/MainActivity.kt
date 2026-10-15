@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import android.app.DatePickerDialog
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -1695,31 +1694,26 @@ class MainActivity : AppCompatActivity() {
         getSharedPreferences("vibemate_age", MODE_PRIVATE).edit().putBoolean("age_verified", true).apply()
     }
 
-    /** Ask the user to pick a real date of birth; must be at least 18 years ago. */
+    /**
+     * 18+ confirmation — a single tap ("I am 18 or older") instead of a date-of-
+     * birth picker, so entering Private mode is low-friction. This is still an
+     * explicit 18+ gate (remembered once given); it is NOT an app-side content
+     * limit — the adult model itself decides what it will answer.
+     */
     private fun showAgeVerification() {
-        val calendar = Calendar.getInstance()
-        val nowYear = calendar.get(Calendar.YEAR)
-        val dialog = DatePickerDialog(
-            this,
-            { _, year, month, day ->
-                val chosen = Calendar.getInstance()
-                chosen.set(year, month, day)
-                val age = nowYear - year
-                if (age >= 18 && chosen.before(Calendar.getInstance())) {
-                    markAgeVerified()
-                    showToast("Age confirmed — Private mode unlocked")
-                    enterPrivateMode()
-                } else {
-                    showToast("Sorry — Private mode is for 18+ only")
-                }
-            },
-            nowYear - 18,
-            0,
-            1,
-        )
-        dialog.setTitle("18+ Verification")
-        dialog.setMessage("Private mode contains adult content for 18+ users only.\nSelect your date of birth to unlock it.")
-        dialog.show()
+        AlertDialog.Builder(this)
+            .setTitle("18+ Confirmation")
+            .setMessage(
+                "Private mode contains adult content for 18+ users only.\n" +
+                    "Confirm that you are 18 or older to continue."
+            )
+            .setPositiveButton("I am 18 or older") { _, _ ->
+                markAgeVerified()
+                showToast("Age confirmed — Private mode unlocked")
+                enterPrivateMode()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     /** Call button clicked - starts a voice call with VibeMate AI */
