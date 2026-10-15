@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ===================== Login screen =====================
+         Boxed text fields, labels and buttons used by the auth / welcome panel
+         in activity_main.xml. -->
+
+    <!-- Small bold label for a field (e.g. "Relation"). -->
+    <style name="AuthFieldLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#12333A</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <!-- Boxed input field. The boxed background is set on each view itself so
+         that it always wins over the theme's default EditText background. -->
+    <style name="AuthInput">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">54dp</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:textColor">#102026</item>
+        <item name="android:textColorHint">#93A2A8</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <!-- Base auth button: full width, 52dp tall, sentence case. -->
+    <style name="AuthButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- Filled brand-green button (Log In). -->
+    <style name="AuthButtonPrimary" parent="AuthButton">
+        <item name="android:background">@drawable/bg_btn_primary</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <!-- White button with a green outline (Create Account). -->
+    <style name="AuthButtonOutline" parent="AuthButton">
+        <item name="android:background">@drawable/bg_btn_outline</item>
+        <item name="android:textColor">#0F6B60</item>
+    </style>
+
+    <!-- Quiet button for the secondary sign-in choices (guest / Google). -->
+    <style name="AuthButtonLight" parent="AuthButton">
+        <item name="android:background">@drawable/bg_btn_light</item>
+        <item name="android:textColor">#24333A</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+</resources>

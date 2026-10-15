@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Header action button (Refresh / All / Delete / Close). Same look as the
+      app's WhatsApp-style header buttons: bold white text on the green header,
+      borderless ripple, never wider than its own text.
+      NOTE: no dots in the name — a dotted name (Admin.HeaderButton) would make
+      Android look for an implicit parent style called "Admin".
+    -->
+    <style name="AdminHeaderButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <!-- Back arrow on the header of the chat / message screens. -->
+    <style name="AdminBackButton" parent="AdminHeaderButton">
+        <item name="android:text">&#8249;</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">6dp</item>
+    </style>
+</resources>

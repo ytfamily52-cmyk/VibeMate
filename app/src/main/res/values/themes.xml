@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- LIGHT ONLY on purpose: every colour in this app is hand-picked for a
+         light surface (see colors.xml / the bg_* drawables). With the old
+         DayNight parent, a phone in DARK MODE rendered those light colours on a
+         dark window background, which made labels like "Relation" (#12333A)
+         nearly invisible and washed the buttons out — the "dhundhal" panel bug.
+
+         disabledAlpha = 1.0: each button already has its OWN disabled colour in
+         its bg_btn_* selector, and the theme's default 0.38 alpha was stacked on
+         top of that — which is what made a disabled "Start Chat" look faded
+         instead of intentionally off. -->
+    <style name="Base.Theme.VibeMate" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:disabledAlpha">1.0</item>
+    </style>
+
+    <style name="Theme.VibeMate" parent="Base.Theme.VibeMate" />
+</resources>

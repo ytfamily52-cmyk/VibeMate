@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+
+# Runtime configuration
+.env
+
+# Editors / OS
+.idea/
+.DS_Store

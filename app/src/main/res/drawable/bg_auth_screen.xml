@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Login / welcome screen backdrop: soft brand-green gradient behind the card. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:endColor="#12A18F"
+        android:startColor="#0A5D53"
+        android:type="linear" />
+</shape>

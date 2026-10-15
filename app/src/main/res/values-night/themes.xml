@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Dark mode is intentionally NOT used: VibeMate is a light-only app (see
+         values/themes.xml). This night variant exists only so that a phone in
+         dark mode gets the SAME light theme instead of a dark one. -->
+    <style name="Base.Theme.VibeMate" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:disabledAlpha">1.0</item>
+    </style>
+</resources>

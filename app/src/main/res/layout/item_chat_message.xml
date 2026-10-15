@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One WhatsApp-style chat row. The adapter flips gravity + background:
+     user messages align right (green), VibeMate's align left (white). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/messageRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="end"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingTop="3dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="3dp">
+
+    <LinearLayout
+        android:id="@+id/messageBubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:maxWidth="330dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@drawable/bubble_user">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/senderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VibeMate"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#128C7E"
+            android:visibility="gone" />
+
+        <!-- WhatsApp-style photo attachment: shown only for IMAGE messages,
+             adjusts its bounds to the photo aspect (max width 240dp). -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/messageImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="280dp"
+            android:adjustViewBounds="true"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="Shared photo"
+            android:visibility="gone" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/messageBody"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="16sp"
+            android:textColor="#111B21" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/messageMeta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text=""
+            android:textSize="11sp"
+            android:textColor="#667781" />
+
+        <!-- Shown only for call-to-action rows (the "Join Private Chat" invite
+             after explicit content in normal chat). --> 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/messageAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:minHeight="0dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:text=""
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

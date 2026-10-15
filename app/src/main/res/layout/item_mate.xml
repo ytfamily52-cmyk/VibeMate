@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Green circle avatar with the mate's initial (like WhatsApp). -->
+    <TextView
+        android:id="@+id/mateAvatar"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:background="@drawable/avatar_circle"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Green tick circle shown on the avatar when the row is selected. -->
+    <TextView
+        android:id="@+id/mateCheck"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@drawable/avatar_circle"
+        android:text="✓"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:translationX="14dp"
+        android:translationY="10dp"
+        app:layout_constraintEnd_toEndOf="@id/mateAvatar"
+        app:layout_constraintBottom_toBottomOf="@id/mateAvatar" />
+
+    <!-- Mate's custom name (title row). -->
+    <TextView
+        android:id="@+id/mateName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintStart_toEndOf="@id/mateAvatar"
+        app:layout_constraintEnd_toStartOf="@id/mateChevron"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/mateSubtitle"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="10dp" />
+
+    <!-- Persona type (subtitle row). -->
+    <TextView
+        android:id="@+id/mateSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="#737373"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintStart_toEndOf="@id/mateAvatar"
+        app:layout_constraintEnd_toStartOf="@id/mateChevron"
+        app:layout_constraintTop_toBottomOf="@id/mateName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="10dp" />
+
+    <!-- Chevron on the right edge (WhatsApp row affordance). -->
+    <TextView
+        android:id="@+id/mateChevron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="›"
+        android:textSize="26sp"
+        android:textColor="#BDBDBD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="16dp" />
+
+    <!-- WhatsApp-style hairline divider. -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#ECECEC"
+        app:layout_constraintStart_toEndOf="@id/mateAvatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

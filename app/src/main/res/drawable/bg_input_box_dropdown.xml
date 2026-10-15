@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Relation dropdown: the same boxed field as the text inputs plus a chevron
+     on the right (a Spinner draws its arrow from its own background). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bg_input_box" />
+    <item
+        android:width="20dp"
+        android:height="20dp"
+        android:drawable="@drawable/ic_dropdown_arrow"
+        android:gravity="end|center_vertical"
+        android:right="14dp" />
+</layer-list>

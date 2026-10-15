@@ -1,0 +1,75 @@
+# Render Blueprint — one-click deploy of the VibeMate FastAPI backend.
+# Push the repo to GitHub, then in Render: "New → Blueprint" and paste the
+# repo URL (or use the dashboard and mirror these settings).
+#
+# NOTE: VIBEMATE_STORE starts as "memory" so the first deploy works out of the
+#       box. For persistence set it to "firestore" and add a Google service
+#       account as a Render "Secret File" (see DEPLOY.md).
+services:
+  - type: web
+    name: vibemate-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    plan: free
+    envVars:
+      - key: VIBEMATE_STORE
+        value: memory
+      - key: VIBEMATE_HOST
+        value: 0.0.0.0
+      - key: FIREBASE_PROJECT_ID
+        value: vibemate-3b75b
+      - key: GCP_PROJECT_ID
+        value: vibemate-3b75b
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 10080
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash
+      # --- OpenRouter (18+ private mode) ---
+      # Primary + one model PER PERSONA so each private room has its own voice.
+      # Fallbacks are tried on provider errors / rate-limits / refusals.
+      - key: OPENROUTER_MODEL
+        value: cognitivecomputations/dolphin-mistral-24b-venice-edition
+      - key: OPENROUTER_MODEL_GIRLFRIEND
+        value: cognitivecomputations/dolphin-mistral-24b-venice-edition
+      - key: OPENROUTER_MODEL_BOYFRIEND
+        value: sao10k/l3.3-euryale-70b
+      - key: OPENROUTER_MODEL_CRUSH
+        value: thedrummer/skyfall-36b-v2
+      # BOTH gay personas share this one model: "Gay" is a single relation in the
+      # app (a same-sex couple) split into boy gay (gay_boy) and girl gay
+      # (gay_girl / lesbian); the persona prompt keeps the couples apart.
+      - key: OPENROUTER_MODEL_GAY
+        value: cognitivecomputations/dolphin-mistral-24b-venice-edition
+      - key: OPENROUTER_FALLBACK_MODEL
+        value: thedrummer/cydonia-24b-v4.1,cognitivecomputations/dolphin-mistral-24b-venice-edition
+      # Longer output budget for private replies (explicit role-play runs long).
+      - key: OPENROUTER_MAX_OUTPUT_TOKENS
+        value: "2048"
+      # Vision reader — actually "sees" photos sent in the private room before
+      # the adult model replies, with a DEEP whole-image scan (scene / body
+      # parts / pose / look / clothing / lighting). qwen3-vl-235b-a22b is the
+      # biggest unmoderated, non-reasoning vision model and names explicit
+      # content precisely (Google's gemini only passes a drawing but renames a
+      # real explicit photo into "wall/door frame").
+      - key: OPENROUTER_VISION_MODEL
+        value: qwen/qwen3-vl-235b-a22b-instruct
+      # Tried in order when a vision model refuses / moderates an EXPLICIT 18+
+      # photo — one provider's moderation must not end the photo read.
+      - key: OPENROUTER_VISION_FALLBACK_MODELS
+        value: mistralai/mistral-small-3.2-24b-instruct,meta-llama/llama-4-maverick,qwen/qwen2.5-vl-72b-instruct
+      - key: OPENROUTER_BASE_URL
+        value: https://openrouter.ai/api/v1
+      # --- secrets (set manually, marked sync:false) ---
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: PRIVATE_SYSTEM_PROMPT
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true

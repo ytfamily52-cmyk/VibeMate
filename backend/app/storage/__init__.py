@@ -1,0 +1,1 @@
+"""Storage backends (in-memory and Firestore REST)."""

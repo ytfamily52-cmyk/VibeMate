@@ -1,0 +1,16 @@
+# Keep the image small and NEVER ship secrets or the local venv.
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.env
+*.log
+engine.log
+engine.err.log
+smoke_*.txt
+pytest*.txt
+all_test_*.txt
+tests/
+Dockerfile
+DEPLOY.md

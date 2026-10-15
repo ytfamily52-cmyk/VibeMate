@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- ===================== AUTH / WELCOME PANEL =====================
+         Professional login screen: brand-green backdrop with ONE white card that
+         holds the whole form. Email / Password / Display name are boxed inputs
+         (bg_input_box). No relation picker here — that lives on the
+         "Add a relationship" (contact) panel further down. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/authPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_auth_screen"
+        android:visibility="visible">
+
+        <ScrollView
+            android:id="@+id/authScroll"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- fillViewport + gravity="center" keeps the card vertically centred
+                 on tall screens, and scrollable on short ones. -->
+            <LinearLayout
+                android:id="@+id/authScrollContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/authCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_auth_card"
+                    android:elevation="8dp"
+                    android:orientation="vertical"
+                    android:paddingStart="22dp"
+                    android:paddingTop="22dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="22dp">
+
+                    <TextView
+                        android:id="@+id/authBadge"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/bg_brand_badge"
+                        android:gravity="center"
+                        android:text="V"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/appTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:letterSpacing="0.02"
+                        android:text="VibeMate"
+                        android:textColor="#0B2B26"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/authSubtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center"
+                        android:text="Log in or create an account"
+                        android:textColor="#6B7A80"
+                        android:textSize="14sp" />
+
+                    <!-- AppCompat widgets on purpose: MaterialButton/EditText
+                         manage their own background, these keep the boxed
+                         drawables exactly as designed. -->
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/emailInput"
+                        style="@style/AuthInput"
+                        android:background="@drawable/bg_input_box"
+                        android:hint="Email"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/passwordInput"
+                        style="@style/AuthInput"
+                        android:background="@drawable/bg_input_box"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:maxLines="1" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/nameInput"
+                        style="@style/AuthInput"
+                        android:background="@drawable/bg_input_box"
+                        android:hint="Display name (new accounts)"
+                        android:inputType="textPersonName"
+                        android:maxLines="1" />
+
+                    <!-- No relation picker on the login screen: the relationship is
+                         chosen once, on the "Add a relationship" (contact) screen
+                         that opens right after login. -->
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/loginButton"
+                        style="@style/AuthButtonPrimary"
+                        android:layout_marginTop="12dp"
+                        android:onClick="onLoginClicked"
+                        android:text="Log In" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/registerButton"
+                        style="@style/AuthButtonOutline"
+                        android:layout_marginTop="8dp"
+                        android:onClick="onRegisterClicked"
+                        android:text="Create Account" />
+
+                    <!-- Divider between the email sign-in and the other choices. -->
+                    <LinearLayout
+                        android:id="@+id/authOrRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1"
+                            android:background="#E2E9EB" />
+
+                        <TextView
+                            android:id="@+id/authOrLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:text="OR"
+                            android:textColor="#93A2A8"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1"
+                            android:background="#E2E9EB" />
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/anonymousButton"
+                        style="@style/AuthButtonLight"
+                        android:layout_marginTop="12dp"
+                        android:onClick="onAnonymousClicked"
+                        android:text="Continue as Guest" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/googleButton"
+                        style="@style/AuthButtonLight"
+                        android:layout_marginTop="8dp"
+                        android:onClick="onGoogleClicked"
+                        android:text="Continue with Google" />
+
+                    <TextView
+                        android:id="@+id/statusText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text=""
+                        android:textColor="#5B6B72"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ===================== PERSONA / "CHOOSE YOUR VIBE" PANEL =====================
+         Shown right after login/register (and via New Chat / the + button): the
+         user picks the AI's character — girlfriend, boyfriend, crush or gay — and
+         the app builds the chat session with that persona.
+
+         SAME design language as the login screen: brand-green gradient backdrop
+         with ONE white card that holds the whole form. Before this the controls
+         floated on a bare window background, which (on a phone in dark mode)
+         left the "Relation" label nearly invisible and washed the button out. -->
+    <FrameLayout
+        android:id="@+id/personaPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_auth_screen"
+        android:visibility="invisible">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:paddingStart="20dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="20dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/personaCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_auth_card"
+                    android:elevation="8dp"
+                    android:orientation="vertical"
+                    android:paddingStart="22dp"
+                    android:paddingTop="26dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="26dp">
+
+                    <TextView
+                        android:id="@+id/personaBadge"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/bg_brand_badge"
+                        android:gravity="center"
+                        android:text="+"
+                        android:textColor="#FFFFFF"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/personaTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center"
+                        android:letterSpacing="0.01"
+                        android:text="Add a relationship"
+                        android:textColor="#0B2B26"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/personaSubtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center"
+                        android:text="Give a name and pick a relationship"
+                        android:textColor="#6B7A80"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/mateNameLabel"
+                        style="@style/AuthFieldLabel"
+                        android:layout_marginBottom="6dp"
+                        android:text="Their name" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/mateNameInput"
+                        style="@style/AuthInput"
+                        android:layout_marginBottom="18dp"
+                        android:background="@drawable/bg_input_box"
+                        android:hint="e.g. Priya, John…"
+                        android:inputType="textPersonName"
+                        android:maxLength="20"
+                        android:maxLines="1" />
+
+                    <!-- ALL the relations in ONE dropdown: "Relation" is the
+                         label, the spinner below it is the select box
+                         (Girlfriend / Boyfriend / Crush / Gay). This is the only
+                         place where the relationship is chosen. "Gay" is a
+                         same-sex couple, so which couple it is gets picked in the
+                         row right below (personaGayTypeRow). -->
+                    <TextView
+                        android:id="@+id/personaRelationLabel"
+                        style="@style/AuthFieldLabel"
+                        android:layout_marginBottom="6dp"
+                        android:text="Relation" />
+
+                    <Spinner
+                        android:id="@+id/personaRelationSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_input_box_dropdown"
+                        android:backgroundTint="@null"
+                        android:contentDescription="Select relation"
+                        android:minHeight="54dp"
+                        android:popupBackground="#FFFFFF"
+                        android:spinnerMode="dropdown" />
+
+                    <!-- Gay type row: visible ONLY while the relation above is
+                         "Gay" (every other relation hides it). A gay relationship
+                         is a same-sex couple, so the user says WHICH couple —
+                         "Boy Gay" (both men, the mate is a man) or "Girl Gay"
+                         (both women, the mate is a woman). The selected row is the
+                         exact persona id sent to the backend (gay_boy / gay_girl);
+                         "Boy Gay" is pre-selected, so picking "Gay" alone is
+                         already enough to start a chat. -->
+                    <LinearLayout
+                        android:id="@+id/personaGayTypeRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/personaGayTypeLabel"
+                            style="@style/AuthFieldLabel"
+                            android:layout_marginBottom="6dp"
+                            android:text="Gay type" />
+
+                        <Spinner
+                            android:id="@+id/personaGayTypeSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_input_box_dropdown"
+                            android:backgroundTint="@null"
+                            android:contentDescription="Select gay type"
+                            android:minHeight="54dp"
+                            android:popupBackground="#FFFFFF"
+                            android:spinnerMode="dropdown" />
+
+                    </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/personaStartButton"
+                        style="@style/AuthButtonPrimary"
+                        android:layout_marginTop="26dp"
+                        android:enabled="false"
+                        android:onClick="onStartChatClicked"
+                        android:text="Start Chat" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <ImageButton
+            android:id="@+id/personaCloseButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="12dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Close"
+            android:onClick="onPersonaCloseClicked"
+            android:src="@drawable/ic_close"
+            android:tint="#FFFFFF" />
+
+    </FrameLayout>
+
+    <!-- ===================== CHAT PANEL ===================== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chatPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chatHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#075E54"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/chatAvatar"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/avatar_circle"
+                android:gravity="center"
+                android:text="V"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/chatTitleBlock"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@id/chatAvatar"
+                app:layout_constraintEnd_toStartOf="@id/privateButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:id="@+id/chatTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="VibeMate"
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/chatStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="online"
+                    android:textColor="#D1E7DD"
+                    android:textSize="13sp"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
+            <!-- Message-selection bar (shown when the user long-presses a chat
+                 bubble to delete messages): replaces the normal header content. -->
+            <ImageButton
+                android:id="@+id/chatSelectCancel"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="#FFFFFF"
+                android:contentDescription="Close selection"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:padding="10dp"
+                android:visibility="gone"
+                android:onClick="onChatSelectCancelClicked"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/chatSelectTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 selected"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@id/chatSelectCancel"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <Button
+                android:id="@+id/chatSelectDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="48dp"
+                android:text="Delete"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:visibility="gone"
+                android:onClick="onChatSelectDeleteClicked"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/privateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:text="Private"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:background="@drawable/bg_private_button"
+                android:onClick="onPrivateButtonClicked"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/callButton"
+                android:layout_marginEnd="2dp" />
+
+            <ImageButton
+                android:id="@+id/callButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_phone"
+                android:tint="#FFFFFF"
+                android:contentDescription="Voice call"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:padding="10dp"
+                android:onClick="onCallButtonClicked"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/chatMenuButton"
+                android:layout_marginEnd="2dp" />
+
+            <ImageButton
+                android:id="@+id/chatMenuButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_more"
+                android:tint="#FFFFFF"
+                android:contentDescription="Menu"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:padding="10dp"
+                android:onClick="onMenuButtonClicked"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="4dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            app:layout_constraintTop_toBottomOf="@id/chatHeader"
+            app:layout_constraintBottom_toTopOf="@id/composerBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/composerBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:elevation="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Rounded input field: attach (left) + text (middle) + send (right) -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/composerField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_composer_input"
+                android:paddingStart="4dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ImageButton
+                    android:id="@+id/attachButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_attach"
+                    android:tint="#54656F"
+                    android:contentDescription="Attach file"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    android:onClick="onAttachClicked"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/cameraButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_camera"
+                    android:tint="#54656F"
+                    android:contentDescription="Take a photo"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    android:onClick="onCameraButtonClicked"
+                    app:layout_constraintStart_toEndOf="@id/attachButton"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="2dp" />
+
+                <EditText
+                    android:id="@+id/messageInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:hint="Type a message"
+                    android:textColor="#111B21"
+                    android:textColorHint="#8696A0"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:gravity="top|start"
+                    android:maxLines="6"
+                    android:minLines="1"
+                    android:scrollbars="vertical"
+                    android:imeOptions="actionSend"
+                    android:background="@null"
+                    app:layout_constraintStart_toEndOf="@id/cameraButton"
+                    app:layout_constraintEnd_toStartOf="@id/sendButton"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp" />
+
+                <ImageButton
+                    android:id="@+id/sendButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_send"
+                    android:contentDescription="Send"
+                    android:background="@drawable/bg_send_button"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    android:onClick="onSendClicked"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Pending-photo preview: appears after a photo is selected but not
+                 yet sent, so the user can type a caption first, then press Send
+                 (WhatsApp-style). The ✕ button dismisses it without sending. -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/photoPreviewBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="#E7F3E8"
+                android:visibility="gone"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/composerField">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/photoPreviewThumb"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:scaleType="centerInside"
+                    android:background="#D9EAD5"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/photoPreviewHint"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Photo selected — type a caption below and press Send, or ✕ to cancel."
+                    android:textSize="12sp"
+                    android:textColor="#128C7E"
+                    app:layout_constraintStart_toEndOf="@id/photoPreviewThumb"
+                    app:layout_constraintEnd_toStartOf="@id/photoPreviewCancel"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="4dp" />
+
+                <ImageButton
+                    android:id="@+id/photoPreviewCancel"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_close"
+                    android:tint="#54656F"
+                    android:contentDescription="Cancel photo"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="centerInside"
+                    android:padding="8dp"
+                    android:onClick="onPhotoPreviewCancelClicked"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ===================== MATES HOME PANEL (WhatsApp-style list) ===================== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/matesPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:visibility="gone">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/matesHeader"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:background="#4CAF50"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/matesTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="VibeMate"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="16dp" />
+
+            <Button
+                android:id="@+id/matesSelectButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="48dp"
+                android:text="Select"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="onSelectChatsClicked"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/matesLogoutButton" />
+
+            <ImageButton
+                android:id="@+id/matesLogoutButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="#FFFFFF"
+                android:contentDescription="Log out"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:padding="10dp"
+                android:onClick="onLogoutClicked"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/matesAddButton"
+                android:layout_marginEnd="2dp" />
+
+            <ImageButton
+                android:id="@+id/matesAddButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_add"
+                android:tint="#FFFFFF"
+                android:contentDescription="Add new mate"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:padding="10dp"
+                android:onClick="onAddMateClicked"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/matesSelectAllButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="48dp"
+                android:text="All"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:visibility="gone"
+                android:onClick="onSelectAllClicked"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/matesDeleteButton" />
+
+            <Button
+                android:id="@+id/matesDeleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="0dp"
+                android:minHeight="48dp"
+                android:text="Delete"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:visibility="gone"
+                android:onClick="onDeleteSelectedClicked"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/matesList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/matesHeader"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/matesEmpty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="No chats yet. Tap + to start one!"
+            android:textSize="15sp"
+            android:textColor="#737373"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/matesHeader"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ===================== CALL OVERLAY ===================== -->
+    <include
+        android:id="@+id/callOverlay"
+        layout="@layout/activity_call" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

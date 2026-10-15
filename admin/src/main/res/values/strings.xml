@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VibeMate Admin</string>
+    <!-- Row badge: the user removed this chat from the app, we still have it. -->
+    <string name="admin_user_deleted_badge">USER DELETED</string>
+</resources>

@@ -1,0 +1,50 @@
+<!-- VibeMate launcher logo: a white chat bubble with a pink heart inside —
+     "chat with your special someone". All shapes stay inside the adaptive
+     icon safe circle (radius 33 around the center 54,54). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Soft drop shadow under the bubble -->
+    <path
+        android:fillColor="#1A000000"
+        android:pathData="M40,32h32a12,12 0 0 1 12,12v16a12,12 0 0 1 -12,12H58L46,84L40,72a12,12 0 0 1 -12,-12V44a12,12 0 0 1 12,-12z" />
+
+    <!-- White chat bubble with a bottom-left tail -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,30h32a12,12 0 0 1 12,12v16a12,12 0 0 1 -12,12H56L44,82L38,70a12,12 0 0 1 -12,-12V42a12,12 0 0 1 12,-12z" />
+
+    <!-- Pink heart centered inside the bubble (24-box path, scaled 1.05x) -->
+    <group
+        android:translateX="42"
+        android:translateY="37.5"
+        android:scaleX="1.05"
+        android:scaleY="1.05">
+        <path
+            android:pathData="M12,21.35l-1.45,-1.32C5.4,15.36 2,12.28 2,8.5 2,5.42 4.42,3 7.5,3c1.74,0 3.41,0.81 4.5,2.09C13.09,3.81 14.76,3 16.5,3 19.58,3 22,5.42 22,8.5c0,3.78 -3.4,6.86 -8.55,11.54L12,21.35z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="2"
+                    android:startY="3"
+                    android:endX="22"
+                    android:endY="21"
+                    android:type="linear">
+                    <item
+                        android:color="#FFFF6B95"
+                        android:offset="0.0" />
+                    <item
+                        android:color="#FFE62E6B"
+                        android:offset="1.0" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- Tiny gloss highlight on the heart -->
+        <path
+            android:fillColor="#59FFFFFF"
+            android:pathData="M8.6,6.2a2.1,2.1 0 1 0 0.01,0z" />
+    </group>
+</vector>

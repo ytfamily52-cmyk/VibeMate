@@ -1,0 +1,83 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+firebase-debug.log
+firestore-debug.log
+database-debug.log
+ui-debug.log
+
+# Firebase credentials — NEVER commit these
+sa.json
+service-account*.json
+serviceAccountKey*.json
+*-service-account*.json
+*adminsdk*.json
+*-adminsdk-*.json
+.firebase/
+
+# ---- App secrets (injected into BuildConfig by app/build.gradle.kts) ----
+# Real keys live ONLY in this local file; never commit it.
+secrets.properties
+keystore.properties
+
+# ---- Backend / server secrets ----
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+
+# ---- Environment files that may carry keys ----
+*.properties.bak
+
+# ---- Build artifacts that embed the keys (an APK/AAB is a leaked key) ----
+*.apk
+*.aab
+*.ap_
+/app/release/
+**/release/*.apk
+**/release/*.aab
+
+# ---- Logs / dumps / scratch that may contain tokens or keys ----
+*.log
+*.log2
+.tmp-auth-test/
+
+# ---- Local dev scripts that had live API keys hardcoded in them ----
+# (Refactor them to read the key from an env var to track them again.)
+/check_vision_live.py
+/test_deep_readers.py
+/test_privacy_block.py
+/test_private_photo_flow.py
+/make_test_image.py
+/disc_dump.js
+
+# ---- Scratch / debug / test output (regenerable, safe to delete) ----
+.kotlin/
+node_modules/
+*.err
+*.bak
+deep_scan_out.txt
+deep_scan_err.txt
+disc.json
+drawing.png
+real_test.jpg
+
+# Backend scratch / test dumps (keep requirements*.txt committed)
+backend/*.txt
+!backend/requirements.txt
+!backend/requirements-dev.txt
+backend/tok2.json
+admin/release/

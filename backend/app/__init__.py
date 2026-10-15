@@ -1,0 +1,1 @@
+"""VibeMate backend application package."""

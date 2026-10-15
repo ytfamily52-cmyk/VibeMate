@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "371766671790",
+    "project_id": "vibemate-3b75b",
+    "storage_bucket": "vibemate-3b75b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371766671790:android:5935aa1156328c3c58f03f",
+        "android_client_info": {
+          "package_name": "com.example.vibemate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj6r7qwZBnUj5G86nUtORYXz0CiCnNONE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

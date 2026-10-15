@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Everything the app talks to is HTTPS — Firebase (auth + Firestore), Google
+  Gemini (normal chat) and OpenRouter (the 18+ Private room) — so cleartext HTTP
+  is blocked app-wide.
+
+  This matters now that the APK is published publicly: no request can ever be
+  silently downgraded to plaintext or sniffed on a hostile network.
+
+  If you ever point the app at a local HTTP dev server again, re-add it here:
+      <domain-config cleartextTrafficPermitted="true">
+          <domain includeSubdomains="false">10.0.2.2</domain>
+          <domain includeSubdomains="false">localhost</domain>
+      </domain-config>
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launcher icon foreground: a white admin shield with a teal tick. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,22 L82,33 V55 C82,72 70,85 54,89 C38,85 26,72 26,55 V33 Z" />
+    <path
+        android:fillColor="#128C7E"
+        android:pathData="M40,54 L49,63 L69,43 L74,48 L49,73 L35,59 Z" />
+</vector>

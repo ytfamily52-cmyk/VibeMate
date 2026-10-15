@@ -1,0 +1,152 @@
+rules_version = '2';
+
+// VibeMate Firestore security rules — PRIVATE / owner-only.
+//
+// Every document is readable and writable ONLY by the signed-in user who owns
+// it. Nobody else (and no unauthenticated caller) can read, list, write or
+// delete someone else's chats, messages, profile or call records — this is what
+// keeps private (18+) chats and their base64 photos private.
+//
+// Data model (see VibeMateApi.kt):
+//   users/{uid}                                -> display_name, created_at, updated_at
+//   chat_sessions/{sessionId}                  -> owner_id, title, persona, mate_name,
+//                                                 private_mode, created_at, updated_at
+//   chat_sessions/{sessionId}/messages/{msgId} -> role, content, type, file_name,
+//                                                 data (base64 image/audio/doc), created_at
+//   call_records/{callId}                      -> user_id, session_id, persona, status,
+//                                                 started_at, ended_at
+//
+// The ONLY exception is the admin override at the top (see isAdmin()): the
+// separate VibeMate Admin app (./admin) signs in with an allow-listed account
+// and may READ + DELETE (never write) other users' documents.
+//
+// Deploy:  firebase deploy --only firestore:rules
+//   (or paste this file into Firebase Console → Firestore Database → Rules)
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Convenience: is there a signed-in user?
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // ======================= ADMIN OVERRIDE (VibeMate Admin app) ==============
+    // The admin app (second APK, see ./admin) signs in with ONE of the accounts
+    // listed below and is then allowed to READ and DELETE any user's data so the
+    // owner can review + moderate every chat.
+    //
+    // (3) The EASIEST way — no redeploy ever: create ONE document per admin
+    //     named after their uid. Firebase Console → Firestore → Start collection
+    //     `admins` → Add document → Document ID = the uid you see in
+    //     Authentication → Users (e.g. field `admin` = true). Delete that
+    //     document to revoke access instantly.
+    function isAdmin() {
+      return signedIn()
+        && (
+          // (1) E-mail list (the value below is only an example — put YOUR
+          //     admin account email here; case-insensitive).
+          (
+            request.auth.token.email != null
+            && request.auth.token.email.lower() in [
+              'ngkaman143@gmail.com'        // <-- EDIT 1: admin account email(s)
+            ]
+          )
+          // (2) uid list — most precise, never affected by an email change.
+          || request.auth.uid in [
+            'uJlZuXOhh7T1SDloSb0ffkFtMEp1'  // <-- EDIT 2: admin uid(s)
+          ]
+          // (3) admins/{uid} document (see above) — works with NO redeploy.
+          //     The app never writes here, so nobody can promote themselves.
+          || exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        );
+    }
+
+    // --- admins/{uid} : who may use the admin app ----------------------------
+    // Read-only for the account itself (that is all `exists()` above needs) and
+    // NOT writable from any client, so an admin can only be created/removed from
+    // the Firebase Console or with the Admin SDK.
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // --- users/{uid} : a profile is private to its own uid --------------------
+    match /users/{uid} {
+      allow get, create, update, delete: if signedIn() && request.auth.uid == uid;
+
+      // ADMIN: the admin app lists EVERY profile and can remove one (never write).
+      allow get, list, delete: if isAdmin();
+    }
+
+    // --- chat_sessions/{sessionId} : private to the owner_id field ------------
+    match /chat_sessions/{sessionId} {
+
+      // Read only my own sessions. `get` uses the stored owner_id.
+      //
+      // The owner deliberately can NOT hard-delete a session: "delete chat" in
+      // the app only FLAGS the chat (deleted_by_owner + deleted_at) so it
+      // disappears from the user's own screens while the chat and every message
+      // stay stored for the admin panel. The ONLY final delete is the admin's
+      // (see the isAdmin() rule below).
+      allow get: if signedIn() && resource.data.owner_id == request.auth.uid;
+
+      // List is allowed ONLY for a query that is provably mine. The app runs a
+      // structured query with `where owner_id == <my uid>`, which satisfies this.
+      allow list: if signedIn() && request.auth.uid == resource.data.owner_id;
+
+      // ADMIN: read (list + get) and the FINAL delete of ANY session, including
+      // an unfiltered collection list used to build the per-user chat counts.
+      allow get, list, delete: if isAdmin();
+
+      // Create only with owner_id set to myself (cannot forge someone else's).
+      allow create: if signedIn() && request.resource.data.owner_id == request.auth.uid;
+
+      // Update only my own doc, the owner_id must stay me (no re-assigning), and
+      // a chat the user already deleted must STAY deleted for the user: the flag
+      // can only move false -> true, never back (nothing can resurrect a deleted
+      // chat into the app; only the admin can remove it for good).
+      allow update: if signedIn()
+        && resource.data.owner_id == request.auth.uid
+        && request.resource.data.owner_id == request.auth.uid
+        && (
+          !("deleted_by_owner" in resource.data)
+          || resource.data.deleted_by_owner == false
+          || request.resource.data.deleted_by_owner == true
+        );
+
+      // --- messages subcollection : private to the parent session's owner ----
+      match /messages/{messageId} {
+        // The parent path is fixed, so get() is deterministic and safe for list.
+        function parentOwner() {
+          return get(/databases/$(database)/documents/chat_sessions/$(sessionId)).data.owner_id
+            == request.auth.uid;
+        }
+        // The owner reads and writes their own messages. DELETE is admin-only:
+        // the app's "Clear chat" only sets cleared_at on the session document, so
+        // the stored messages keep existing (hidden from the user, still visible
+        // to the admin panel) until an admin deletes them for good.
+        allow read, create, update: if signedIn() && parentOwner();
+
+        // ADMIN: every message of every chat is readable + deletable.
+        allow read, delete: if isAdmin();
+      }
+    }
+
+    // --- call_records/{callId} : private to the user_id field -----------------
+    match /call_records/{callId} {
+      allow get, delete: if signedIn() && resource.data.user_id == request.auth.uid;
+      allow list: if signedIn() && request.auth.uid == resource.data.user_id;
+      allow create: if signedIn() && request.resource.data.user_id == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.user_id == request.auth.uid
+        && request.resource.data.user_id == request.auth.uid;
+
+      // ADMIN: read + delete a user's call history too (kept in sync when a
+      // user is deleted from the admin app).
+      allow get, list, delete: if isAdmin();
+    }
+
+    // Everything else is denied by default (no matching rule above).
+  }
+}

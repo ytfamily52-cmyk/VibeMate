@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Brand badge ("V") shown on top of the login card. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#128C7E" />
+    <stroke
+        android:width="3dp"
+        android:color="#33FFFFFF" />
+</shape>

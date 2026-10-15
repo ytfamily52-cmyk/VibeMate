@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- VibeMate brand background: deep-teal → WhatsApp-green diagonal gradient
+     with two soft light glows for depth. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Diagonal brand gradient -->
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startX="0"
+                android:startY="0"
+                android:endX="108"
+                android:endY="108"
+                android:type="linear">
+                <item
+                    android:color="#FF0B5A50"
+                    android:offset="0.0" />
+                <item
+                    android:color="#FF128C7E"
+                    android:offset="0.55" />
+                <item
+                    android:color="#FF25D366"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Soft glow, top-right -->
+    <path
+        android:fillColor="#12FFFFFF"
+        android:pathData="M112,22 A26,26 0 1 1 60,22 A26,26 0 1 1 112,22 Z" />
+
+    <!-- Soft glow, bottom-left -->
+    <path
+        android:fillColor="#10FFFFFF"
+        android:pathData="M38,92 A20,20 0 1 1 -2,92 A20,20 0 1 1 38,92 Z" />
+</vector>
